@@ -1,0 +1,10 @@
+[project]
+name = "auto-search"
+version = "0.1.0"
+description = "Automated search tool using Selenium and WebDriver Manager"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "selenium>=4.45.0",
+    "webdriver-manager>=4.1.2",
+]
