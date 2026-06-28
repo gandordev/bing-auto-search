@@ -13,7 +13,7 @@ from webdriver_manager.microsoft import EdgeChromiumDriverManager
 # local imports ----------------------------------------------------
 from .keywords import SEARCH_TERMS
 
-DELAY = 1
+DELAY = 0.15
 
 
 def run(total: int = 45):
@@ -51,13 +51,19 @@ def _build_driver() -> webdriver.Edge:
         The Selenium WebDriver instance for Microsoft Edge.
     """
     options = Options()
-    options.add_argument("--start-maximized")
+    options.add_argument("--headless=new")
+    options.add_argument("--window-size=1920,1080")
+    options.add_argument("--disable-gpu")
     options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-dev-shm-usage")
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option("useAutomationExtension", False)
 
     service = Service(EdgeChromiumDriverManager().install())
     driver = webdriver.Edge(service=service, options=options)
+    driver.set_page_load_timeout(10)
+    driver.implicitly_wait(0.5)
 
     # Ocultar webdriver flag
     driver.execute_script(
@@ -85,17 +91,16 @@ def _search(driver: webdriver.Edge, term: str, tab_index: int):
         driver.switch_to.window(driver.window_handles[-1])
 
     driver.get("https://www.bing.com")
-    time.sleep(random.uniform(1.5, 3.0))
+    time.sleep(random.uniform(0.2, 0.5))
 
     try:
         search_box = driver.find_element(By.NAME, "q")
-        # Simula escritura humana carácter a carácter
         for char in term:
             search_box.send_keys(char)
-            time.sleep(random.uniform(0.04, 0.15))
-        time.sleep(random.uniform(0.5, 1.2))
+            time.sleep(random.uniform(0.01, 0.04))
+        time.sleep(random.uniform(0.1, 0.2))
         search_box.send_keys(Keys.RETURN)
-        time.sleep(random.uniform(2.0, 4.0))
+        time.sleep(random.uniform(0.3, 0.8))
     except Exception as e:
         print(f"Error during search for term '{term}': {e}")
 
